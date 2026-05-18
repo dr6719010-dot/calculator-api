@@ -8,3 +8,5 @@ class EmptyListError(CalculatorError):
 
 class DivisionByZeroError(CalculatorError):
     pass
+class LogarithmError(CalculatorError):
+    pass

@@ -1,11 +1,12 @@
-from exceptions import CalculatorError, EmptyListError, DivisionByZeroError
+from exceptions import CalculatorError, EmptyListError, DivisionByZeroError,LogarithmError
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from calculator import (
     calculate_sum,
     calculate_product,
     calculate_difference,
-    calculate_division
+    calculate_division,
+    logarithms
 )
 from models import Numbers
 
@@ -22,7 +23,8 @@ operations = {
     "sum": calculate_sum,
     "product": calculate_product,
     "difference": calculate_difference,
-    "division": calculate_division
+    "division": calculate_division,
+    "log": logarithms
 }
 
 @app.get("/")
@@ -42,12 +44,14 @@ def get_history():
 @app.post("/calculate")
 def calculate(data: Numbers):
     try:
-        operation = operations[data.operation]
-        result = operation(data.numbers)
+        operation = operations.get(data.operation)
+        result = operation(data.numbers, data.base)
         return {"operation": data.operation, "result": result}
     except EmptyListError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except DivisionByZeroError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except LogarithmError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except CalculatorError as e:
         raise HTTPException(status_code=400, detail=str(e))

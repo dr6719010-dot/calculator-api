@@ -1,4 +1,7 @@
-from exceptions import CalculatorError, EmptyListError, DivisionByZeroError
+from http.client import HTTPException
+
+from exceptions import CalculatorError, EmptyListError, DivisionByZeroError,LogarithmError
+import math
 
 
 def validate_numbers(nums):
@@ -9,13 +12,13 @@ def validate_numbers(nums):
     return nums
 
 
-def calculate_sum(nums):
+def calculate_sum(nums, base=None):
     nums = validate_numbers(nums)
     return sum(nums)
 
 
-def calculate_product(nums):
-    nums = validate_numbers(nums)
+def calculate_product(nums, base=None):
+    nums = validate_numbers(nums )
 
     result = 1
     for n in nums:
@@ -24,7 +27,7 @@ def calculate_product(nums):
     return result
 
 
-def calculate_difference(nums):
+def calculate_difference(nums, base=None):
     nums = validate_numbers(nums)
 
     result = nums[0]
@@ -34,7 +37,7 @@ def calculate_difference(nums):
     return result
 
 
-def calculate_division(nums):
+def calculate_division(nums, base=None):
     nums = validate_numbers(nums)
     if len(nums) < 2:
         raise CalculatorError("division requires at least 2 numbers")
@@ -44,3 +47,23 @@ def calculate_division(nums):
     for n in nums[1:]:
         result /= n
     return result
+
+def logarithms(nums, base=None):
+    nums = validate_numbers(nums)
+
+    for n in nums:
+        if n <= 0:
+            raise LogarithmError(
+                "logarithm is only defined for positive numbers"
+            )
+
+    if base is not None:
+        if base <= 0:
+            raise LogarithmError("base must be positive")
+
+        if base == 1:
+            raise LogarithmError("base cannot be 1")
+
+        return [math.log(n, base) for n in nums]
+
+    return [math.log(n) for n in nums]
